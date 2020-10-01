@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from "./common/form";
+import Form from "./form";
 
 
 class Login extends Form {
