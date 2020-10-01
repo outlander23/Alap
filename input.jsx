@@ -18,9 +18,8 @@ const Input=({name,value,onChange,label,type,placeholder,error})=>{
 	id={name}
 	/>
 	{error && <div className="alert alert-danger">{error}</div>}
-</div>
-
-);
+	</div>
+	);
 }
 
 export default Input;
