@@ -10,7 +10,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
