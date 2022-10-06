@@ -30,6 +30,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get("/special", (req, res) => {
+  res.redirect(`/join/special`);
+});
+
 app.get("/join", (req, res) => {
   res.redirect(`/join/${uuid.v4()}`);
 });
