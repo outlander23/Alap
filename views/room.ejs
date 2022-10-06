@@ -3,37 +3,36 @@
   <head>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
-      section {
-        background-color: blue;
+      #video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 300px);
+        grid-auto-rows: 300px;
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
     </style>
   </head>
   <body>
-    <section id="video-grid"></section>
-    <section id="video-other"></section>
+    <div id="video-grid"></div>
 
     <script type="module" defer>
-      const peers = {};
-      const roomID = "<%= roomID %>";
-      const port = "<%= port %>";
+      var port = "<%= port %>";
+      var roomID = "<%= roomID %>";
       import { io } from "https://cdn.socket.io/4.5.2/socket.io.esm.min.js";
-      const socket = io();
       var myPeer = new Peer(undefined, {
         host: "/",
         port: port,
         path: "/peerjs",
       });
-
-      const myVideo = document.createElement("video");
+      let socket = io();
       const videoGrid = document.getElementById("video-grid");
-      const videOther = document.getElementById("video-other");
+      const myVideo = document.createElement("video");
       myVideo.muted = true;
-
-      navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
+      const peers = {};
       navigator.mediaDevices
         .getUserMedia({
           video: true,
@@ -50,26 +49,19 @@
             });
           });
 
-          socket.on("user-connected", (userID) => {
-            connectToNewUser(userID, stream);
+          socket.on("user-connected", (userId) => {
+            connectToNewUser(userId, stream);
           });
         });
+
+      socket.on("user-disconnected", (userId) => {
+        console.log("user quit");
+        if (peers[userId]) peers[userId].close();
+      });
 
       myPeer.on("open", (id) => {
         socket.emit("join-room", roomID, id);
       });
-
-      socket.on("user-disconnected", (userID) => {
-        if (peers[userID]) peers[userID].close();
-      });
-
-      function addVideoStream(video, stream) {
-        video.srcObject = stream;
-        video.addEventListener("loadedmetadata", () => {
-          video.play();
-        });
-        videoGrid.append(video);
-      }
 
       function connectToNewUser(userId, stream) {
         const call = myPeer.call(userId, stream);
@@ -82,6 +74,14 @@
         });
 
         peers[userId] = call;
+      }
+
+      function addVideoStream(video, stream) {
+        video.srcObject = stream;
+        video.addEventListener("loadedmetadata", () => {
+          video.play();
+        });
+        videoGrid.append(video);
       }
     </script>
   </body>

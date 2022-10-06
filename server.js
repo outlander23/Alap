@@ -50,13 +50,11 @@ server.listen(PORT, () => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("join-room", (roomID, id) => {
-    console.log(roomID, id);
-    socket.join(roomID);
-    socket.to(roomID).emit("user-connected", id);
+  socket.on("join-room", (roomId, userId) => {
+    socket.join(roomId);
+    socket.to(roomId).emit("user-connected", userId);
     socket.on("disconnect", () => {
-      socket.to(roomID).emit("user-disconnected", id);
-      console.log("disconnect");
+      socket.to(roomId).emit("user-disconnected", userId);
     });
   });
 });
