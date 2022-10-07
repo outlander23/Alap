@@ -42,6 +42,7 @@ app.get("/join/:id", (req, res) => {
   res.render("room", {
     roomID: req.params.id,
     port: PORT,
+    name: req.query.name || "miloy",
   });
 });
 
